@@ -51,13 +51,25 @@ class AssetGroup(object):
 
 class ReportTemplate(object):
     def __init__(self, isGlobal, id, last_update, template_type, title, type, user):
+        """ Qualys Report Template Object
+
+
+               Args:
+                   isGlobal (int): 0 for falase and 1 for true
+                   id (str): Qualys assigned ID number
+                   last_update (str): Last updated format is 2018-10-22T00:09:09Z
+                   template_type (str): Template type
+                   title (str): Template title
+                   type (str): Manual, Auto, etc
+                   user (str): Owner of scan
+               """
         self.isGlobal = int(isGlobal)
         self.id = int(id)
         self.last_update = str(last_update).replace('T', ' ').replace('Z', '').split(' ')
         self.template_type = template_type
         self.title = title
         self.type = type
-        self.user = user.LOGIN
+        self.user = user
 
     def __repr__(self):
         return f"qualys_id: {self.id}, title: {self.title}"
