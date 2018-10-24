@@ -178,7 +178,7 @@ class Scan(object):
         self.option_profile = str(option_profile)
         self.processed = int(processed)
         self.ref = str(ref)
-        self.status = str(status.STATE)
+        self.status = str(status)
         self.target = str(target).split(', ')
         self.title = str(title)
         self.type = str(type)
