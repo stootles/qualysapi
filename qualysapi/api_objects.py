@@ -39,14 +39,14 @@ class AssetGroup(object):
     def __init__(self, business_impact, id, last_update, scanips, scandns, scanner_appliances, title):
         """Qualys Host Object
 
-                      Args:
-                          business_impact (str): Business impact level (e.g. 4)
-                          id (int): Qualys assigned ID number
-                          last_update (str): Last Updated format is 2018-10-22T00:09:09Z
-                          scanips (list of str): list of IP addresses
-                          scandns (list of str): list of DNS names
-                          scanner_appliances (list of str): Scan Appliance names
-                          title (str): Asset Group Title
+            Args:
+              business_impact (str): Business impact level (e.g. 4)
+              id (int): Qualys assigned ID number
+              last_update (str): Last Updated format is 2018-10-22T00:09:09Z
+              scanips (list of str): list of IP addresses
+              scandns (list of str): list of DNS names
+              scanner_appliances (list of str): Scan Appliance names
+              title (str): Asset Group Title
         """
         self.business_impact = str(business_impact)
         self.id = int(id)
@@ -57,12 +57,23 @@ class AssetGroup(object):
         self.title = str(title)
 
     def addAsset(self, conn, ip):
+        """Adds a single IP address to the AssetGroup
+
+            Args:
+                ip (str): IPv4 Address to add
+        """
         call = '/api/2.0/fo/asset/group/'
         parameters = {'action': 'edit', 'id': self.id, 'add_ips': ip}
         conn.request(call, parameters)
         self.scanips.append(ip)
 
     def setAssets(self, conn, ips):
+        """Replaces IP addresses with the supplied set of IP AddressesAssetGroup
+
+            Args:
+                ips (str): IPv4 Address comma seperated list
+
+        """
         call = '/api/2.0/fo/asset/group/'
         parameters = {'action': 'edit', 'id': self.id, 'set_ips': ips}
         conn.request(call, parameters)
@@ -100,7 +111,7 @@ class ReportTemplate(object):
 class Report(object):
     def __init__(self, expiration_datetime, id, launch_datetime, output_format, size, status, type, user_login,
                  title=''):
-        """Qualys ReportObject
+        """Qualys Report Object
 
 
         Args:
@@ -138,6 +149,21 @@ class Report(object):
 class Scan(object):
     def __init__(self, assetgroups, duration, launch_datetime, option_profile, processed, ref, status, target, title,
                  type, user_login):
+        """Qualys Scan Object
+
+
+        Args:
+            assetgroups (????): ????
+            duration (str): Time scan has been running or ran for if Finished
+            launch_datetime (str): Date and time report was generated format is 2018-10-22T00:09:09Z
+            option_profile (str): Which option profile was used
+            processed (int): ????
+            ref (str): Qualys Assigned Identifier
+            status (str): State of scan (e.g. Finished)
+            title (str): Title of the Scan
+            type (str): Scan Type
+            user_login (str): User login ID who generated the report
+        """
         self.assetgroups = assetgroups
         self.duration = str(duration)
         launch_datetime = str(launch_datetime).replace('T', ' ').replace('Z', '').split(' ')
