@@ -120,7 +120,7 @@ class Report(object):
         self.launch_datetime = str(launch_datetime).replace('T', ' ').replace('Z', '').split(' ')
         self.output_format = output_format
         self.size = size
-        self.status = status.STATE
+        self.status = status
         self.type = type
         self.user_login = user_login
         self.title = title
