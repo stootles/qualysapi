@@ -5,6 +5,17 @@ from lxml import objectify
 
 class Host(object):
     def __init__(self, dns, id, ip, last_scan, netbios, os, tracking_method):
+        """Qualys Host Object
+
+
+                      Args:
+                          dns (str): FQDN hostname
+                          id (int): Qualys assigned ID number
+                          last_scan (str): Last Scan date/time format is 2018-10-22T00:09:09Z
+                          netbios (str): NETBIOS name
+                          os (str): OS String
+                          tracking_method (str): IP/DNS etc
+        """
         self.dns = str(dns)
         self.id = int(id)
         self.ip = str(ip)
@@ -26,6 +37,17 @@ class Host(object):
 
 class AssetGroup(object):
     def __init__(self, business_impact, id, last_update, scanips, scandns, scanner_appliances, title):
+        """Qualys Host Object
+
+                      Args:
+                          business_impact (str): Business impact level (e.g. 4)
+                          id (int): Qualys assigned ID number
+                          last_update (str): Last Updated format is 2018-10-22T00:09:09Z
+                          scanips (list of str): list of IP addresses
+                          scandns (list of str): list of DNS names
+                          scanner_appliances (list of str): Scan Appliance names
+                          title (str): Asset Group Title
+        """
         self.business_impact = str(business_impact)
         self.id = int(id)
         self.last_update = str(last_update)
@@ -51,18 +73,18 @@ class AssetGroup(object):
 
 class ReportTemplate(object):
     def __init__(self, isGlobal, id, last_update, template_type, title, type, user):
-        """ Qualys Report Template Object
+        """Qualys Report Template Object
 
 
-               Args:
-                   isGlobal (int): 0 for falase and 1 for true
-                   id (str): Qualys assigned ID number
-                   last_update (str): Last updated format is 2018-10-22T00:09:09Z
-                   template_type (str): Template type
-                   title (str): Template title
-                   type (str): Manual, Auto, etc
-                   user (str): Owner of scan
-               """
+        Args:
+           isGlobal (int): 0 for falase and 1 for true
+           id (int): Qualys assigned ID number
+           last_update (str): Last updated format is 2018-10-22T00:09:09Z
+           template_type (str): Template type
+           title (str): Template title
+           type (str): Manual, Auto, etc
+           user (str): Owner of scan
+        """
         self.isGlobal = int(isGlobal)
         self.id = int(id)
         self.last_update = str(last_update).replace('T', ' ').replace('Z', '').split(' ')
@@ -78,6 +100,21 @@ class ReportTemplate(object):
 class Report(object):
     def __init__(self, expiration_datetime, id, launch_datetime, output_format, size, status, type, user_login,
                  title=''):
+        """Qualys ReportObject
+
+
+        Args:
+            expiration_datetime (str): Date this report will be removed
+                                       Format is 2018-10-22T00:09:09Z)
+            id (int): Qualys assigned ID number
+            launch_datetime (str): Date and time report was generated format is 2018-10-22T00:09:09Z
+            output_format (str): Report format (PDF, CSV, etc)
+            size (str): Size of the report/file
+            status (str): State of report (e.g. Finished)
+            type (str): Report type
+            user_login (str): User login ID who generated the report
+            title (str): Title of the report
+        """
         self.expiration_datetime = str(expiration_datetime).replace('T', ' ').replace('Z', '').split(' ')
         self.id = int(id)
         self.launch_datetime = str(launch_datetime).replace('T', ' ').replace('Z', '').split(' ')
