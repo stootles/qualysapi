@@ -2,13 +2,14 @@ import unittest
 import os
 import sys
 import requests_mock
+import tests.fixtures_api_objects as fixtures
 import logging
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from qualysapi.api_objects import *
 import qualysapi.connector as qcconn
 
-# TODO There is an argument to be made that many attributes should be read-only in these objects
+# TODO There is an argument to be made that many attributes should be read-only in the api_objects objects
 # TODO There may be an opportuniry to create an refresh() method so these obejcts can refresh if needed
 
 
@@ -25,7 +26,7 @@ class TestAPIObjects(unittest.TestCase):
         qgc.session.mount('https://', adapter)
 
     def test_host_object(self):
-        host = Host('host.example.com', '12345678', '127.0.0.1', 'invalid_date', 'HOST', 'Windows 2012', 'IP')
+        host = Host('host.example.com', 12345678, '127.0.0.1', 'invalid_date', 'HOST', 'Windows 2012', 'IP')
         self.assertIsInstance(host,
                               Host,
                               'Should be instance of Host')
@@ -36,41 +37,48 @@ class TestAPIObjects(unittest.TestCase):
                          host.last_scan,
                          'Host with invalid date on generation should be considered "never" scanned')
 
-        host = Host('host.example.com', '12345678', '127.0.0.1', '2018-10-22T00:09:09Z', 'HOST', 'Windows 2012', 'IP')
+        host = Host('host.example.com', 12345678, '127.0.0.1', '2018-10-22T00:09:09Z', 'HOST', 'Windows 2012', 'IP')
 
         self.assertIsInstance(host.last_scan, datetime.datetime, "Last Scan should be Date type for scanned hosts")
 
     def test_asset_group_object(self):
-        asset_group = AssetGroup('4', '87654321', '2018-10-22T00:09:09Z',
-                                 ['127.0.0.1', '127.0.0.2'], '', ['Default Scanner'], 'A Simple Asset Group')
+        asset_group = AssetGroup('4', 87654321, '2018-10-22T00:09:09Z',
+                                 ['127.0.0.1', '127.0.0.2'], [''], ['Default Scanner'], 'A Simple Asset Group')
         self.assertIsInstance(asset_group, AssetGroup)
         self.assertEqual('qualys_id: 87654321, title: A Simple Asset Group',
                          repr(asset_group),
                          "Should have a reasonable __REPR__")
 
     def test_asset_group_addAsset(self):
-        # TODO addAsset should test for susccess
+        # TODO addAsset should test for success
         # TODO addAsset should test for failure
-        # TODO addAsset should work for one ip or multiple ips
-        # TODO Should use fixtures to mock responses
-        # TODO Should take comma seperate list OR a list of ip address
-        adapter.register_uri('POST', '/api/2.0/fo/asset/group/', text='resp')
+        # TODO addAsset should work for multiple ips in a List or as a comma separated list
+        adapter.register_uri('POST', '/api/2.0/fo/asset/group/', text=fixtures.assetGroupAddAssetSuccessResponse)
 
         asset_group = AssetGroup('4', '87654321', '2018-10-22T00:09:09Z',
                                  ['127.0.0.1', '127.0.0.2'], '', ['Default Scanner'], 'A Simple Asset Group')
 
         asset_group.addAsset(qgc, '127.0.0.3')
-        self.assertIn('127.0.0.3', asset_group.scanips, "Added IP should be in list of ips")
+        self.assertIn('127.0.0.3',
+                      asset_group.scanips,
+                      "Added Single IPv4 string should be in list of ips")
+
+        self.assertIn('127.0.0.1',
+                      asset_group.scanips,
+                      "Should still have original members after changes")
+
+        self.assertNotIn('127.0.0.6',
+                         asset_group.scanips,
+                         "Should not have unexpected members after changes")
 
     def test_asset_group_setAssets(self):
-        # TODO setAsset should test for susccess
+        # TODO setAsset should test for success
         # TODO setAsset should test for failure
-        # TODO Should use fixtures to mock responses
         # TODO Should take comma seperate list OR a list of ip address
         # TODO Should update assets in AssetGroup or refresh AssetGroup
-        adapter.register_uri('POST', '/api/2.0/fo/asset/group/', text='resp')
+        adapter.register_uri('POST', '/api/2.0/fo/asset/group/', text=fixtures.assetGroupSetAssetSuccessResponse)
 
-        asset_group = AssetGroup('4', '87654321', '2018-10-22T00:09:09Z',
+        asset_group = AssetGroup('4', 87654321, '2018-10-22T00:09:09Z',
                                  ['127.0.0.1', '127.0.0.2'], '', ['Default Scanner'], 'A Simple Asset Group')
 
         asset_group.setAssets(qgc, '127.0.0.3')
@@ -96,7 +104,7 @@ class TestAPIObjects(unittest.TestCase):
     def test_report_download(self):
         # TODO download should test for failure
         # TODO download should error if report not ready
-        # TODO Should use fixtures to mock responses
+        # TODO Should use fixtures to mock responses NEEDS A SAMPLE REPORT CREATED.
         # TODO For larger reports, would be nice to have a version that streams results
         # TODO For larger reports, would be nice to have a a progress callback loop
         report = Report('2017-08-30T00:34:16Z', '1234567', '2017-08-23T00:34:16Z', 'PDF', '123', 'Finished', 'Scan',
